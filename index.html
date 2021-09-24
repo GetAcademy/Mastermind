@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastermind</title>
+    <style>
+        .panel {
+            font-size: 8vmin;
+            background-color: peru;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            width: 40vmin;
+        }
+        
+        .emptyPeg {
+            color: darkslategray;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="app"></div>
+    <script>
+        // model
+        let correctColorNumber1;
+        let correctColorNumber2;
+        let correctColorNumber3;
+        let correctColorNumber4;
+        let guessedColorNumber1;
+        let guessedColorNumber2;
+        let guessedColorNumber3;
+        let guessedColorNumber4;
+        let history = '';
+        initModel();
+
+        // et lite hack for å ta vare på historikken - dette er ikke model-view-controller
+        let historyHtml = '';
+
+        // view
+        function updateView() {
+            document.getElementById('app').innerHTML =
+                createColoredPegsHtml(
+                    guessedColorNumber1,
+                    guessedColorNumber2,
+                    guessedColorNumber3,
+                    guessedColorNumber4);
+        }
+
+        function createColoredPegsHtml(colorNumber1, colorNumber2, colorNumber3, colorNumber4) {
+            let html = createColoredPegHtml(colorNumber1) +
+                createColoredPegHtml(colorNumber2) +
+                createColoredPegHtml(colorNumber3) +
+                createColoredPegHtml(colorNumber4);
+            return `<div class="panel">${html}</div>`;
+        }
+
+        function createColoredPegHtml(colorNumber) {
+            if (colorNumber == null) return '<div class="emptyPeg">●</div>';
+            let color = colorNameFromNumber(colorNumber);
+            return `<div style="color: ${color}">⬤</div>`;
+        }
+
+        function colorNameFromNumber(colorNumber) {
+            if (colorNumber == 1) return 'white';
+            if (colorNumber == 2) return 'black';
+            if (colorNumber == 3) return 'red';
+            if (colorNumber == 4) return 'blue';
+            if (colorNumber == 5) return 'yellow';
+            if (colorNumber == 6) return 'green';
+            return '';
+        }
+        // controller
+        function initModel() {
+            correctColorNumber1 = getRandomColorNumber();
+            correctColorNumber2 = getRandomColorNumber();
+            correctColorNumber3 = getRandomColorNumber();
+            correctColorNumber4 = getRandomColorNumber();
+            guessedColorNumber1 = guessedColorNumber2 = guessedColorNumber3 = guessedColorNumber4 = null;
+            updateView();
+        }
+
+        function getRandomColorNumber() {
+            return Math.ceil(Math.random() * 6);
+        }
+    </script>
+</body>
+
+</html>
