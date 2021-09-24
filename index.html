@@ -11,13 +11,27 @@
             font-size: 8vmin;
             background-color: peru;
             display: flex;
-            align-items: center;
             justify-content: space-around;
             width: 40vmin;
+            user-select: none;
         }
         
-        .emptyPeg {
+        .empty {
             color: darkslategray;
+        }
+        
+        .peg {
+            width: 12vmin;
+            height: 12vmin;
+            text-align: center;
+        }
+        
+        button {
+            font-size: 200%;
+            background-color: forestgreen;
+            color: white;
+            margin: 1vmin;
+            width: 38vmin;
         }
     </style>
 </head>
@@ -36,35 +50,73 @@
         let guessedColorNumber3;
         let guessedColorNumber4;
         let history = '';
-        initModel();
 
-        // et lite hack for å ta vare på historikken - dette er ikke model-view-controller
+        // et lite hack for å ta vare på historikken - dette følger ikke model-view-controller
         let historyHtml = '';
 
         // view
         function updateView() {
+            let pegsHtml = createColoredPegsHtml(
+                guessedColorNumber1,
+                guessedColorNumber2,
+                guessedColorNumber3,
+                guessedColorNumber4);
             document.getElementById('app').innerHTML =
-                createColoredPegsHtml(
-                    guessedColorNumber1,
-                    guessedColorNumber2,
-                    guessedColorNumber3,
-                    guessedColorNumber4);
+                pegsHtml +
+                '<button onclick="guess()">Tipp</button>' +
+                historyHtml;
         }
 
         function createColoredPegsHtml(colorNumber1, colorNumber2, colorNumber3, colorNumber4) {
-            let html = createColoredPegHtml(colorNumber1) +
-                createColoredPegHtml(colorNumber2) +
-                createColoredPegHtml(colorNumber3) +
-                createColoredPegHtml(colorNumber4);
+            let html = createColoredPegHtml(colorNumber1, 1) +
+                createColoredPegHtml(colorNumber2, 2) +
+                createColoredPegHtml(colorNumber3, 3) +
+                createColoredPegHtml(colorNumber4, 4);
             return `<div class="panel">${html}</div>`;
         }
 
-        function createColoredPegHtml(colorNumber) {
-            if (colorNumber == null) return '<div class="emptyPeg">●</div>';
+        function createColoredPegHtml(colorNumber, number) {
+            let onclick = `onclick="nextColor(${number})"`;
+            if (colorNumber == null) return `<div class="empty peg" ${onclick}>●</div>`;
             let color = colorNameFromNumber(colorNumber);
-            return `<div style="color: ${color}">⬤</div>`;
+            return `<div class="peg" style="color: ${color}" ${onclick}>⬤</div>`;
         }
 
+        // controller
+        initModel();
+
+        function initModel() {
+            correctColorNumber1 = getRandomColorNumber();
+            correctColorNumber2 = getRandomColorNumber();
+            correctColorNumber3 = getRandomColorNumber();
+            correctColorNumber4 = getRandomColorNumber();
+            initGuess();
+            updateView();
+        }
+
+        function initGuess() {
+            guessedColorNumber1 = guessedColorNumber2 = guessedColorNumber3 = guessedColorNumber4 = null;
+        }
+
+        function nextColor(number) {
+            if (number == 1) guessedColorNumber1 = getNextColor(guessedColorNumber1);
+            else if (number == 2) guessedColorNumber2 = getNextColor(guessedColorNumber2);
+            else if (number == 3) guessedColorNumber3 = getNextColor(guessedColorNumber3);
+            else if (number == 4) guessedColorNumber4 = getNextColor(guessedColorNumber4);
+            updateView();
+        }
+
+        function guess() {
+            historyHtml += createColoredPegsHtml(
+                guessedColorNumber1,
+                guessedColorNumber2,
+                guessedColorNumber3,
+                guessedColorNumber4);
+            initGuess();
+            updateView
+        }
+
+        // hjelpefunksjoner
         function colorNameFromNumber(colorNumber) {
             if (colorNumber == 1) return 'white';
             if (colorNumber == 2) return 'black';
@@ -74,14 +126,11 @@
             if (colorNumber == 6) return 'green';
             return '';
         }
-        // controller
-        function initModel() {
-            correctColorNumber1 = getRandomColorNumber();
-            correctColorNumber2 = getRandomColorNumber();
-            correctColorNumber3 = getRandomColorNumber();
-            correctColorNumber4 = getRandomColorNumber();
-            guessedColorNumber1 = guessedColorNumber2 = guessedColorNumber3 = guessedColorNumber4 = null;
-            updateView();
+
+        function getNextColor(colorNumber) {
+            if (colorNumber == null) return 1;
+            if (colorNumber == 6) return null;
+            return colorNumber + 1;
         }
 
         function getRandomColorNumber() {
