@@ -11,8 +11,8 @@
             font-size: 8vmin;
             background-color: peru;
             display: flex;
-            justify-content: space-around;
-            width: 40vmin;
+            justify-content: start;
+            width: 60vmin;
             user-select: none;
         }
         
@@ -24,6 +24,10 @@
             width: 12vmin;
             height: 12vmin;
             text-align: center;
+        }
+        
+        .text {
+            font-size: 2vmin;
         }
         
         button {
@@ -72,7 +76,8 @@
                 createColoredPegHtml(colorNumber2, 2) +
                 createColoredPegHtml(colorNumber3, 3) +
                 createColoredPegHtml(colorNumber4, 4);
-            return `<div class="panel">${html}</div>`;
+            let text = `? riktig farge&pos - <br/>? riktig farge`;
+            return `<div class="panel">${html}<div class="text">${text}</div></div>`;
         }
 
         function createColoredPegHtml(colorNumber, number) {
